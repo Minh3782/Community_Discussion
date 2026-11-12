@@ -1,0 +1,175 @@
+/* ===== Home screens: app/dashboard skeleton =====
+   Desktop:  header spans the top, nav rail on the left, main to the right
+   ≤ 800px:  nav becomes a horizontally scrolling row under the header */
+.shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    'header header'
+    'nav    main';
+  min-height: 100vh;
+}
+
+.shell-header {
+  grid-area: header;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem var(--gap);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.shell-user {
+  justify-self: end;
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+.shell-name { font-weight: 600; font-size: 0.925rem; }
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--green-100);
+  color: var(--green-800);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.role-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--green-200);
+  background: var(--green-50);
+  color: var(--green-800);
+}
+.role-moderator { background: #eef6f0; border-color: #9fd2b0; }
+.role-admin { background: var(--green-600); border-color: var(--green-600); color: #fff; }
+
+/* Nav rail: a one-column grid of links */
+.shell-nav {
+  grid-area: nav;
+  display: grid;
+  align-content: start;
+  gap: 0.25rem;
+  padding: 1.25rem 0.75rem;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky;
+  top: 58px;
+  height: calc(100vh - 58px);
+}
+.shell-nav a {
+  padding: 0.55rem 0.8rem;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.shell-nav a:hover { background: var(--green-50); color: var(--green-700); text-decoration: none; }
+.shell-nav a.active { background: var(--green-100); color: var(--green-800); font-weight: 600; }
+
+/* Main area: 12-column grid of panels */
+.shell-main {
+  grid-area: main;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--gap);
+  align-content: start;
+  padding: var(--gap);
+  min-width: 0;
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  min-width: 0;
+}
+.panel h2 { font-size: 1.05rem; }
+.panel-welcome { grid-column: span 12; background: linear-gradient(135deg, var(--green-50), var(--surface) 70%); gap: 0.4rem; }
+.panel-welcome h1 { font-size: clamp(1.35rem, 2.4vw, 1.75rem); letter-spacing: -0.02em; }
+.eyebrow { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--green-600); }
+.panel-actions { grid-column: span 12; }
+.panel-activity { grid-column: span 8; }
+.panel-account { grid-column: span 4; }
+
+/* auto-fill: as many 200px+ cards per row as fit, no media query needed */
+.action-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+.action-card {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto; /* "Coming soon" lines up at the bottom across a row */
+  gap: 0.4rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.action-card:hover { border-color: var(--green-200); box-shadow: var(--shadow); }
+.action-card h3 { font-size: 0.975rem; }
+.action-card p { font-size: 0.875rem; }
+.action-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--green-50);
+  font-size: 1.1rem;
+}
+.soon { justify-self: start; font-size: 0.75rem; font-weight: 600; color: var(--muted); background: #f2f4f3; padding: 0.15rem 0.5rem; border-radius: 999px; }
+
+.empty { display: grid; justify-items: center; gap: 0.5rem; padding: 2rem 1rem; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: var(--radius-sm); }
+.empty span { font-size: 1.75rem; }
+
+/* key–value list: label left, value right */
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 0.6rem 1rem; margin: 0; font-size: 0.925rem; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; font-weight: 500; text-align: right; overflow-wrap: anywhere; min-width: 0; }
+
+/* ===== ≤ 1000px: activity & account stack ===== */
+@media (max-width: 1000px) {
+  .panel-activity, .panel-account { grid-column: span 12; }
+}
+
+/* ===== ≤ 800px: nav rail turns into a scrolling tab row ===== */
+@media (max-width: 800px) {
+  .shell {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'header'
+      'nav'
+      'main';
+    grid-template-rows: auto auto 1fr;
+  }
+  .shell-nav {
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    overflow-x: auto;
+    padding: 0.5rem var(--gap);
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    position: static; /* no sticky sidebar once it is a row */
+    height: auto;
+    min-width: 0;
+  }
+}
+
+/* ===== ≤ 500px: compact header ===== */
+@media (max-width: 500px) {
+  .shell-name, .role-badge { display: none; }
+  .shell-header .logo-text { display: none; }
+  .shell-header { position: static; }
+}

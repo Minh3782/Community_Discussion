@@ -1,0 +1,122 @@
+/* ===== Design tokens: minimal, light, green ===== */
+:root {
+  --green-50: #f1f8f3;
+  --green-100: #e3f2e8;
+  --green-200: #a7dbb8;
+  --green-600: #1f8a4c;
+  --green-700: #18703d;
+  --green-800: #125530;
+
+  --bg: #f7faf8;
+  --surface: #ffffff;
+  --text: #15241b;
+  --muted: #5e6e64;
+  --border: #e0e8e3;
+
+  --red: #c0392b;
+  --red-bg: #fdf0ee;
+  --amber: #8a5a00;
+  --amber-bg: #fff6e0;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 2px rgb(16 40 26 / 0.04), 0 4px 16px rgb(16 40 26 / 0.06);
+  --gap: clamp(1rem, 2.5vw, 2rem); /* spacing grows with the viewport */
+
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  color: var(--text);
+  color-scheme: light; /* light mode only */
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); min-height: 100vh; }
+h1, h2, h3, p { margin: 0; }
+a { color: var(--green-700); text-decoration: none; font-weight: 500; }
+a:hover { text-decoration: underline; }
+.muted { color: var(--muted); }
+
+/* ===== Logo ===== */
+.logo { display: inline-flex; align-items: center; gap: 0.6rem; }
+.logo svg { flex: none; }
+.logo-text { font-size: 1.05rem; letter-spacing: -0.01em; color: var(--text); }
+.logo-text b { color: var(--green-600); font-weight: 700; margin-left: 0.25em; }
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-grid;
+  place-items: center;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.7rem 1.1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  text-decoration: none !important;
+}
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-primary { background: var(--green-600); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--green-700); }
+.btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border); }
+.btn-ghost:hover:not(:disabled) { border-color: var(--green-600); color: var(--green-700); }
+.btn-block { width: 100%; }
+.btn-sm { padding: 0.4rem 0.8rem; font-size: 0.875rem; }
+:focus-visible { outline: 3px solid var(--green-200); outline-offset: 2px; }
+
+/* ===== Forms ===== */
+.form { display: grid; gap: 1rem; }
+
+/* auto-fit: the two password fields sit side by side when there is room */
+.form-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.form-grid .full { grid-column: 1 / -1; }
+
+.form-row { display: grid; justify-items: end; margin-top: -0.4rem; }
+.link-subtle { font-size: 0.875rem; }
+
+/* align-content: start keeps label + input at the top even when a neighbouring
+   field in the same row is taller (e.g. it has a hint), so inputs line up */
+.field { display: grid; gap: 0.35rem; align-content: start; min-width: 0; }
+.field label { font-size: 0.875rem; font-weight: 600; }
+.input-wrap { display: grid; grid-template-columns: 1fr auto; align-items: center; min-width: 0; }
+.input-wrap input {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  min-width: 0; /* lets the input shrink inside the grid on phones */
+  width: 100%;
+  font: inherit;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.input-wrap input:has(+ .input-toggle) { padding-right: 4rem; }
+.input-wrap input:focus { outline: none; border-color: var(--green-600); box-shadow: 0 0 0 3px var(--green-100); }
+.input-toggle {
+  grid-column: 2;
+  grid-row: 1;
+  margin-right: 0.4rem;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--green-700);
+  background: none;
+  border: 0;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.input-toggle:hover { background: var(--green-50); }
+.has-error input { border-color: var(--red); }
+.field-error { color: var(--red); }
+
+/* ===== Alerts ===== */
+.alert { padding: 0.75rem 0.9rem; border-radius: var(--radius-sm); font-size: 0.925rem; border: 1px solid; }
+.alert-error { background: var(--red-bg); border-color: #f3c9c3; color: var(--red); }
+.alert-success { background: var(--green-50); border-color: var(--green-200); color: var(--green-800); }
+.alert-warn { background: var(--amber-bg); border-color: #f1d9a0; color: var(--amber); }
+.dev-note { font-size: 0.85rem; padding: 0.6rem 0.8rem; border-radius: var(--radius-sm); background: #f4f4f0; border: 1px dashed #cfcfc4; color: #555; }
+
+.page-loading { display: grid; place-items: center; min-height: 100vh; color: var(--muted); }
