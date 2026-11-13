@@ -1,0 +1,79 @@
+/* ===== Auth pages: two named regions =====
+   Desktop:  [ brand | main ]
+   ≤ 860px:  brand becomes a slim top bar, form below it */
+.auth {
+  display: grid;
+  grid-template-columns: minmax(320px, 5fr) 7fr;
+  grid-template-areas: 'brand main';
+  min-height: 100vh;
+}
+
+.auth-brand {
+  grid-area: brand;
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* logo top, copy centred, points at the bottom */
+  gap: var(--gap);
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background:
+    radial-gradient(circle at 85% 10%, rgb(167 219 184 / 0.45), transparent 45%),
+    radial-gradient(circle at 10% 95%, rgb(167 219 184 / 0.35), transparent 40%),
+    var(--green-50);
+  border-right: 1px solid var(--border);
+}
+.auth-brand-copy { align-self: center; display: grid; gap: 0.75rem; max-width: 26rem; }
+.auth-brand-copy h2 { font-size: clamp(1.6rem, 2.6vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; color: var(--green-800); }
+.auth-brand-copy p { color: var(--muted); }
+
+/* list of selling points (plain text, no icons) */
+.auth-points { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; font-size: 0.925rem; color: var(--muted); }
+
+.auth-main {
+  grid-area: main;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 1.25rem;
+  padding: var(--gap);
+  min-width: 0;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  display: grid;
+  gap: 1.5rem;
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.auth-head { display: grid; gap: 0.35rem; }
+.auth-head h1 { font-size: 1.5rem; letter-spacing: -0.02em; }
+.auth-footer { font-size: 0.925rem; color: var(--muted); text-align: center; }
+
+/* ===== Tablet & phone: rearrange, don't just shrink ===== */
+@media (max-width: 860px) {
+  .auth {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'brand'
+      'main';
+    grid-template-rows: auto 1fr;
+  }
+  .auth-brand {
+    grid-template-rows: auto;
+    padding: 1rem var(--gap);
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .auth-brand-copy,
+  .auth-points { display: none; } /* brand panel collapses to just the logo */
+  .auth-main { align-content: start; padding-top: 2rem; }
+}
+
+@media (max-width: 500px) {
+  .auth-main { padding: 1.25rem 1rem; }
+  .auth-card { padding: 1.25rem; box-shadow: none; }
+}
