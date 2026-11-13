@@ -1,89 +1,28 @@
 /**
- * User data access layer — TEMPORARY IN-MEMORY STORE
- * ---------------------------------------------------------------------------
- * TODO(database): The MongoDB "users" collection has NOT been set up yet.
- * Until it is, accounts live in memory and are wiped whenever the server
- * restarts (the seeded demo accounts below are re-created on every start).
- *
- * To move to MongoDB, create `src/models/User.js` (Mongoose schema) with the
- * fields listed in USER SHAPE below, then re-implement each exported function
- * here with the Mongoose equivalent (hints next to each function). The auth
- * controller only talks to these functions, so nothing else needs to change.
- *
- * USER SHAPE (suggested Mongoose schema):
- *   name                 String, required, trimmed
- *   email                String, required, UNIQUE index, lowercase, trimmed
- *   passwordHash         String, required (bcrypt hash, never the raw password)
- *   role                 String, enum ['user', 'moderator', 'admin'], default 'user'
- *   failedLoginAttempts  Number, default 0
- *   lockUntil            Date, default null   (set for 5 min after 5 failed attempts)
- *   resetTokenHash       String, default null (sha256 of the emailed reset token)
- *   resetTokenExpires    Date, default null
- *   createdAt/updatedAt  -> use { timestamps: true }
- * ---------------------------------------------------------------------------
+ * User data access layer, backed by the MongoDB "users" collection
+ * (see src/models/User.js). The auth controller only talks to these functions.
  */
-import crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
-
-const users = new Map(); // id -> user
+import User from '../models/User.js';
 
 const normalizeEmail = (email) => String(email || '').trim().toLowerCase();
 
-// Mongo: User.findOne({ email: normalizeEmail(email) })
-export async function findByEmail(email) {
-  const target = normalizeEmail(email);
-  for (const user of users.values()) {
-    if (user.email === target) return user;
-  }
-  return null;
-}
+export const findByEmail = (email) => User.findOne({ email: normalizeEmail(email) });
 
-// Mongo: User.findById(id)
-export async function findById(id) {
-  return users.get(id) || null;
-}
+export const findById = (id) => (User.db.base.isValidObjectId(id) ? User.findById(id) : null);
 
-// Mongo: User.findOne({ resetTokenHash: hash, resetTokenExpires: { $gt: new Date() } })
-export async function findByValidResetTokenHash(hash) {
-  for (const user of users.values()) {
-    if (user.resetTokenHash === hash && user.resetTokenExpires > new Date()) return user;
-  }
-  return null;
-}
+export const findByValidResetTokenHash = (hash) =>
+  User.findOne({ resetTokenHash: hash, resetTokenExpires: { $gt: new Date() } });
 
-// Mongo: User.create({...}). The unique index on email will throw error code
-// 11000 on duplicates; the controller already checks findByEmail first.
 export async function createUser({ name, email, passwordHash, role = 'user' }) {
-  const now = new Date();
-  const user = {
-    id: crypto.randomUUID(),
-    name: String(name).trim(),
-    email: normalizeEmail(email),
-    passwordHash,
-    role,
-    failedLoginAttempts: 0,
-    lockUntil: null,
-    resetTokenHash: null,
-    resetTokenExpires: null,
-    createdAt: now,
-    updatedAt: now,
-  };
-  users.set(user.id, user);
-  return user;
+  return User.create({ name, email: normalizeEmail(email), passwordHash, role });
 }
 
-// Mongo: User.findByIdAndUpdate(id, changes, { new: true })
-export async function updateUser(id, changes) {
-  const user = users.get(id);
-  if (!user) return null;
-  Object.assign(user, changes, { updatedAt: new Date() });
-  return user;
-}
+export const updateUser = (id, changes) => User.findByIdAndUpdate(id, changes, { returnDocument: 'after' });
 
 /**
  * Demo accounts, one per role, so the acceptance tests can be run right away.
- * TODO(database): replace with a seed script (e.g. `npm run seed`) once the
- * MongoDB collection exists. Moderator/admin accounts cannot self-register.
+ * Only created if missing, so it is safe to run on every start. Moderator/admin accounts cannot self-register.
  */
 export async function seedDemoUsers() {
   const password = 'Password123!';

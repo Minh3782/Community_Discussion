@@ -11,5 +11,5 @@ if (!process.env.SESSION_SECRET) {
 }
 
 await connectDB();
-await seedDemoUsers(); // TODO(database): remove once users are stored in MongoDB
+await seedDemoUsers();
 app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`));
