@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import AdminCommunitiesPage from './pages/AdminCommunitiesPage';
 import RoleHome from './pages/RoleHome';
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
       </Route>
       <Route element={<ProtectedRoute roles={['admin']} />}>
         <Route path="/admin" element={<RoleHome role="admin" />} />
+        <Route path="/admin/communities" element={<AdminCommunitiesPage />} />
       </Route>
 
       {/* App opens on the login page; ProtectedRoute bounces logged-in users home */}
