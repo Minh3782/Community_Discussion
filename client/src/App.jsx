@@ -5,6 +5,7 @@ import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import AdminCommunitiesPage from './pages/AdminCommunitiesPage';
+import CreatePostPage from './pages/CreatePostPage';
 import RoleHome from './pages/RoleHome';
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
       {/* Role home screens */}
       <Route element={<ProtectedRoute roles={['user']} />}>
         <Route path="/home" element={<RoleHome role="user" />} />
+        <Route path="/posts/new" element={<CreatePostPage />} />
       </Route>
       <Route element={<ProtectedRoute roles={['moderator']} />}>
         <Route path="/moderator" element={<RoleHome role="moderator" />} />

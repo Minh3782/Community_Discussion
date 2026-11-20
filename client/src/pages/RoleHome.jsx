@@ -13,7 +13,8 @@ const ROLES = {
     label: 'Member',
     title: 'Your discussions',
     intro: 'Catch up on topics you follow and start new conversations.',
-    nav: ['Home', 'Discussions', 'My posts', 'Saved', 'Notifications'],
+    nav: ['Home', 'Discussions', 'Create a post', 'My posts', 'Saved', 'Notifications'],
+    links: { Home: '/home', 'Create a post': '/posts/new' },
     actions: [
       { icon: '✍️', title: 'Start a discussion', text: 'Ask a question or share an idea with the community.' },
       { icon: '🔎', title: 'Browse topics', text: 'Find conversations by category or keyword.' },
@@ -38,6 +39,7 @@ const ROLES = {
     title: 'Admin console',
     intro: 'Manage accounts, roles and platform settings.',
     nav: ['Home', 'Users', 'Roles', 'Communities', 'Categories', 'Settings'],
+    links: { Home: '/admin', Communities: '/admin/communities' },
     actions: [
       { icon: '👥', title: 'Manage users', text: 'Search, suspend or remove accounts.' },
       { icon: '🛡️', title: 'Assign roles', text: 'Promote members to moderator or admin.' },
@@ -53,6 +55,7 @@ export default function RoleHome({ role, children }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const cfg = ROLES[role];
+  const { links } = cfg;
 
   const handleLogout = async () => {
     await logout();
@@ -73,8 +76,8 @@ export default function RoleHome({ role, children }) {
 
       <nav className="shell-nav" aria-label="Main">
         {cfg.nav.map((item, i) => (
-          role === 'admin' && (item === 'Home' || item === 'Communities') ? (
-            <NavLink key={item} end to={item === 'Home' ? '/admin' : '/admin/communities'}>
+          links?.[item] ? (
+            <NavLink key={item} end to={links[item]}>
               {item}
             </NavLink>
           ) : (
