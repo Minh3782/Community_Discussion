@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import AdminCommunitiesPage from './pages/AdminCommunitiesPage';
 import RoleHome from './pages/RoleHome';
 import DiscussionsPage from './pages/DiscussionsPage';
 
@@ -26,30 +27,37 @@ export default function App() {
         element={<ResetPasswordPage />}
       />
 
-      {/* Pages that require login */}
+      {/* Member home */}
+      <Route element={<ProtectedRoute roles={['user']} />}>
+        <Route
+          path="/home"
+          element={<RoleHome role="user" />}
+        />
+      </Route>
+
+      {/* Moderator home */}
+      <Route element={<ProtectedRoute roles={['moderator']} />}>
+        <Route
+          path="/moderator"
+          element={<RoleHome role="moderator" />}
+        />
+      </Route>
+
+      {/* Administrator pages */}
+      <Route element={<ProtectedRoute roles={['admin']} />}>
+        <Route
+          path="/admin"
+          element={<RoleHome role="admin" />}
+        />
+        <Route
+          path="/admin/communities"
+          element={<AdminCommunitiesPage />}
+        />
+      </Route>
+
+      {/* Discussions: available to every logged-in role */}
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>
-          <Route element={<ProtectedRoute roles={['user']} />}>
-            <Route
-              path="/home"
-              element={<RoleHome role="user" />}
-            />
-          </Route>
-
-          <Route element={<ProtectedRoute roles={['moderator']} />}>
-            <Route
-              path="/moderator"
-              element={<RoleHome role="moderator" />}
-            />
-          </Route>
-
-          <Route element={<ProtectedRoute roles={['admin']} />}>
-            <Route
-              path="/admin"
-              element={<RoleHome role="admin" />}
-            />
-          </Route>
-
           <Route
             path="/discussions"
             element={<DiscussionsPage />}
@@ -57,6 +65,7 @@ export default function App() {
         </Route>
       </Route>
 
+      {/* Unknown URLs */}
       <Route
         path="*"
         element={<Navigate to="/login" replace />}

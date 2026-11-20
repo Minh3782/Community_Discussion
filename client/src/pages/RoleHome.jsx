@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Logo from '../components/Logo';
 import { useAuth } from '../context/AuthContext';
 import '../styles/shell.css';
@@ -37,7 +37,7 @@ const ROLES = {
     label: 'Administrator',
     title: 'Admin console',
     intro: 'Manage accounts, roles and platform settings.',
-    nav: ['Home', 'Users', 'Roles', 'Categories', 'Settings'],
+    nav: ['Home', 'Users', 'Roles', 'Communities', 'Categories', 'Settings'],
     actions: [
       { icon: '👥', title: 'Manage users', text: 'Search, suspend or remove accounts.' },
       { icon: '🛡️', title: 'Assign roles', text: 'Promote members to moderator or admin.' },
@@ -49,7 +49,7 @@ const ROLES = {
 
 const initials = (name) => name.split(/\s+/).map((p) => p[0]).slice(0, 2).join('').toUpperCase();
 
-export default function RoleHome({ role }) {
+export default function RoleHome({ role, children }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const cfg = ROLES[role];
@@ -73,13 +73,20 @@ export default function RoleHome({ role }) {
 
       <nav className="shell-nav" aria-label="Main">
         {cfg.nav.map((item, i) => (
+          role === 'admin' && (item === 'Home' || item === 'Communities') ? (
+            <NavLink key={item} end to={item === 'Home' ? '/admin' : '/admin/communities'}>
+              {item}
+            </NavLink>
+          ) : (
           <a key={item} href="#" className={i === 0 ? 'active' : ''} aria-current={i === 0 ? 'page' : undefined}>
             {item}
           </a>
+          )
         ))}
       </nav>
 
       <main className="shell-main">
+        {children ?? <>
         <section className="panel panel-welcome">
           <p className="eyebrow">{cfg.label} home</p>
           <h1>Hi {user.name.split(' ')[0]}, welcome back 👋</h1>
@@ -116,6 +123,7 @@ export default function RoleHome({ role }) {
             <dt>Role</dt><dd>{cfg.label}</dd>
           </dl>
         </aside>
+        </>}
       </main>
     </div>
   );
