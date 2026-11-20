@@ -6,6 +6,7 @@ import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import AdminCommunitiesPage from './pages/AdminCommunitiesPage';
+import CreatePostPage from './pages/CreatePostPage';
 import RoleHome from './pages/RoleHome';
 import DiscussionsPage from './pages/DiscussionsPage';
 import NewDiscussionPage from './pages/NewDiscussionPage';
@@ -26,6 +27,7 @@ export default function App() {
         <Route element={<AppShell />}>
           <Route element={<ProtectedRoute roles={['user']} />}>
             <Route path="/home" element={<RoleHome role="user" />} />
+            <Route path="/posts/new" element={<CreatePostPage />} />
           </Route>
           <Route element={<ProtectedRoute roles={['moderator']} />}>
             <Route path="/moderator" element={<RoleHome role="moderator" />} />

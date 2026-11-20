@@ -13,6 +13,7 @@ const NAV = {
   user: [
     { label: 'Home', to: '/home' },
     { label: 'Discussions', to: '/discussions' },
+    { label: 'Create a post', to: '/posts/new' },
     { label: 'My posts' },
     { label: 'Saved' },
     { label: 'Notifications' },

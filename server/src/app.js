@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
+import discussionRoutes from './routes/discussionRoutes.js';
 import postRoutes from './routes/postRoutes.js';
 import adminCommunityRoutes from './routes/adminCommunityRoutes.js';
 import communityRoutes from './routes/communityRoutes.js';
@@ -33,6 +34,7 @@ app.use(
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/discussions', discussionRoutes);
 app.use('/api/communities', communityRoutes);
 app.use('/api/admin', adminCommunityRoutes);
 

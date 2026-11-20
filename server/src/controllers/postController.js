@@ -56,6 +56,9 @@ export async function createPost(req, res) {
   if (Object.keys(fields).length) throw httpError(400, Object.values(fields)[0], { fields });
 
   const discussion = await findDiscussion(discussionId);
+  if (!discussion.community || !(await Community.exists({ _id: discussion.community }))) {
+    throw httpError(404, 'Discussion community not found.');
+  }
   if (communityId && !discussion.community.equals(communityId)) {
     throw httpError(400, 'This discussion does not belong to the selected community.');
   }
