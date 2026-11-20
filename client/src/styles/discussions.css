@@ -39,6 +39,7 @@
   overflow: hidden;
 }
 .discussion-meta { font-size: 0.8rem; color: var(--muted); }
+.discussion-body { white-space: pre-wrap; overflow-wrap: anywhere; }
 
 @media (max-width: 1000px) {
   .panel-form { grid-column: span 12; }
