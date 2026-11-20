@@ -94,6 +94,28 @@ a:hover { text-decoration: underline; }
 }
 .input-wrap input:has(+ .input-toggle) { padding-right: 4rem; }
 .input-wrap input:focus { outline: none; border-color: var(--green-600); box-shadow: 0 0 0 3px var(--green-100); }
+
+/* Dropdowns and multi-line text inside a .field look the same as text inputs */
+.field > select,
+.field > textarea {
+  min-width: 0;
+  width: 100%;
+  font: inherit;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field > textarea { resize: vertical; min-height: 8rem; }
+.field > select:focus,
+.field > textarea:focus { outline: none; border-color: var(--green-600); box-shadow: 0 0 0 3px var(--green-100); }
+.has-error > select,
+.has-error > textarea { border-color: var(--red); }
+
+/* Row of form buttons: primary action first, wraps on narrow screens */
+.form-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .input-toggle {
   grid-column: 2;
   grid-row: 1;

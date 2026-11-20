@@ -13,68 +13,36 @@ import NewDiscussionPage from './pages/NewDiscussionPage';
 export default function App() {
   return (
     <Routes>
-      {/* Public pages */}
+      {/* Public pages (logged-in users are redirected to their home) */}
       <Route element={<GuestRoute />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route
-          path="/forgot-password"
-          element={<ForgotPasswordPage />}
-        />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       </Route>
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-      <Route
-        path="/reset-password"
-        element={<ResetPasswordPage />}
-      />
-
-      {/* Member home */}
-      <Route element={<ProtectedRoute roles={['user']} />}>
-        <Route
-          path="/home"
-          element={<RoleHome role="user" />}
-        />
-      </Route>
-
-      {/* Moderator home */}
-      <Route element={<ProtectedRoute roles={['moderator']} />}>
-        <Route
-          path="/moderator"
-          element={<RoleHome role="moderator" />}
-        />
-      </Route>
-
-      {/* Administrator pages */}
-      <Route element={<ProtectedRoute roles={['admin']} />}>
-        <Route
-          path="/admin"
-          element={<RoleHome role="admin" />}
-        />
-        <Route
-          path="/admin/communities"
-          element={<AdminCommunitiesPage />}
-        />
-      </Route>
-
-      {/* Discussions: available to every logged-in role */}
+      {/* Every logged-in page: AppShell draws the header and menu, the page renders in its <Outlet /> */}
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>
-          <Route
-            path="/discussions"
-            element={<DiscussionsPage />}
-          />
-             <Route
-      path="/discussions/new"
-      element={<NewDiscussionPage />}
-    />
+          <Route element={<ProtectedRoute roles={['user']} />}>
+            <Route path="/home" element={<RoleHome role="user" />} />
+          </Route>
+          <Route element={<ProtectedRoute roles={['moderator']} />}>
+            <Route path="/moderator" element={<RoleHome role="moderator" />} />
+          </Route>
+          <Route element={<ProtectedRoute roles={['admin']} />}>
+            <Route path="/admin" element={<RoleHome role="admin" />} />
+            <Route path="/admin/communities" element={<AdminCommunitiesPage />} />
+          </Route>
+
+          {/* Any logged-in role */}
+          <Route path="/discussions" element={<DiscussionsPage />} />
+          <Route path="/discussions/new" element={<NewDiscussionPage />} />
         </Route>
       </Route>
 
-      {/* Unknown URLs */}
-      <Route
-        path="*"
-        element={<Navigate to="/login" replace />}
-      />
+      {/* App opens on the login page; ProtectedRoute bounces logged-in users home */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }
