@@ -221,7 +221,11 @@ export default function DiscussionsPage() {
           <div className="discussion-grid">
             {currentResult.discussions.map((discussion) => (
               <article key={discussion._id} className="discussion-card">
-                <h3>{discussion.title}</h3>
+                <h3>
+                  <Link to={`/discussions/${encodeURIComponent(discussion._id)}?${new URLSearchParams({ community: communityId })}`}>
+                    {discussion.title}
+                  </Link>
+                </h3>
                 <p className="muted discussion-excerpt">{discussion.content}</p>
                 <p className="discussion-meta">
                   {discussion.creator?.name || 'Unknown member'}

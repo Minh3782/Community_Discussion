@@ -8,6 +8,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import AdminCommunitiesPage from './pages/AdminCommunitiesPage';
 import CreatePostPage from './pages/CreatePostPage';
 import RoleHome from './pages/RoleHome';
+import DiscussionDetailPage from './pages/DiscussionDetailPage';
 import DiscussionsPage from './pages/DiscussionsPage';
 import NewDiscussionPage from './pages/NewDiscussionPage';
 
@@ -40,6 +41,7 @@ export default function App() {
           {/* Any logged-in role */}
           <Route path="/discussions" element={<DiscussionsPage />} />
           <Route path="/discussions/new" element={<NewDiscussionPage />} />
+          <Route path="/discussions/:discussionId" element={<DiscussionDetailPage />} />
         </Route>
       </Route>
 
