@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api, { errorMessage } from '../api';
 import Field from '../components/Field';
-import RoleHome from './RoleHome';
 import '../styles/create-post.css';
 
 export default function CreatePostPage() {
@@ -70,7 +69,7 @@ export default function CreatePostPage() {
       const response = await api.post('/posts', {
         title: title.trim(),
         body: content.trim(),
-        discussion: selected.id,
+        discussionId: selected.id,
       });
       if (response.status !== 201) {
         setPublishError('The server did not confirm publication.');
@@ -87,13 +86,15 @@ export default function CreatePostPage() {
   }
 
   return (
-    <RoleHome role="user">
       <section className="panel create-post" aria-labelledby="create-post-heading">
         <h1 id="create-post-heading">Create a Post</h1>
         {loading && <p role="status">Loading discussions…</p>}
         {loadError && <p className="alert alert-error" role="alert">{loadError}</p>}
         {!loading && !loadError && !discussions.length && (
-          <p role="status">There are no discussions available for posting.</p>
+          <div>
+            <p role="status">You can post in discussions from communities you have joined. No eligible discussions are available.</p>
+            <Link to="/discussions">Browse discussions</Link>
+          </div>
         )}
         {published && <p className="alert alert-success" role="status">Post published.</p>}
         {publishError && <p className="alert alert-error" role="alert">{publishError}</p>}
@@ -145,6 +146,5 @@ export default function CreatePostPage() {
           </div>
         </form>
       </section>
-    </RoleHome>
   );
 }

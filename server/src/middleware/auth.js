@@ -1,15 +1,12 @@
-import { findById } from '../data/userStore.js';
+import * as Users from '../data/userStore.js';
 
-// Blocks requests without a logged-in session
-export function requireAuth(req, res, next) {
-  if (!req.session?.userId) return res.status(401).json({ message: 'Not logged in.' });
-  next();
-}
-
-export async function requireMember(req, res, next) {
-  const user = await findById(req.session.userId);
+// Blocks requests without a logged-in session and makes the current user available as req.user.
+// The user is loaded fresh on every request, so deleted accounts and role changes apply immediately.
+export async function requireAuth(req, res, next) {
+  const user = req.session?.userId && (await Users.findById(req.session.userId));
   if (!user) return res.status(401).json({ message: 'Not logged in.' });
-  if (user.role !== 'user') return res.status(403).json({ message: 'Forbidden.' });
+  req.user = user;
+  req.session.role = user.role;
   next();
 }
 

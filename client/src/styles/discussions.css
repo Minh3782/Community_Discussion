@@ -1,0 +1,49 @@
+/* ===== Discussions pages (U3), inside the AppShell 12-column grid ===== */
+
+/* Heading on the left, action button on the right */
+.panel-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Keep the community dropdown a readable width on wide screens */
+.community-picker { max-width: 420px; }
+
+/* New-discussion form: 8 of 12 columns on desktop, full width below 1000px */
+.panel-form { grid-column: span 8; }
+
+/* Discussion cards: as many 260px+ columns as fit */
+.discussion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+.discussion-card {
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* meta line lines up at the bottom across a row */
+  gap: 0.4rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  min-width: 0;
+}
+.discussion-card h3 { font-size: 0.975rem; overflow-wrap: anywhere; }
+.discussion-excerpt {
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* long content is cut to three lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.discussion-meta { font-size: 0.8rem; color: var(--muted); }
+
+@media (max-width: 1000px) {
+  .panel-form { grid-column: span 12; }
+}
+
+@media (max-width: 500px) {
+  .panel-head { grid-template-columns: 1fr; justify-items: start; }
+}

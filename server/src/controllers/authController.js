@@ -36,7 +36,14 @@ export async function register(req, res) {
 
   const passwordHash = await bcrypt.hash(password, 10);
   // Self-registration always creates a regular user; moderators/admins are assigned.
-  const user = await Users.createUser({ name, email, passwordHash, role: 'user' });
+  let user;
+  try {
+    user = await Users.createUser({ name, email, passwordHash, role: 'user' });
+  } catch (err) {
+    // Two sign-ups with the same email at the same moment: the unique index catches the second one
+    if (err.code === 11000) throw httpError(409, 'An account with this email already exists.');
+    throw err;
+  }
   res.status(201).json({ message: 'Account created. You can now log in.', user: publicUser(user) });
 }
 
