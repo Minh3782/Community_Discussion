@@ -1,0 +1,61 @@
+/* ===== Communities pages (U1), inside the AppShell 12-column grid ===== */
+.panel-wide { grid-column: span 12; }
+.panel-rules { grid-column: span 12; }
+.stack { display: grid; gap: 0.75rem; justify-items: start; }
+
+/* Community cards: as many 260px+ columns as fit */
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+.community-card {
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* Join / Leave lines up at the bottom across a row */
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  min-width: 0;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.community-card:hover { border-color: var(--green-200); box-shadow: var(--shadow); }
+.community-card-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 0.5rem;
+}
+.community-card h3 { font-size: 1rem; overflow-wrap: anywhere; }
+.community-desc {
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.community-desc-full { overflow-wrap: anywhere; white-space: pre-wrap; }
+.community-card-foot {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+.member-badge {
+  justify-self: start;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--green-100);
+  color: var(--green-800);
+  border: 1px solid var(--green-200);
+}
+.rules-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.head-actions { display: grid; grid-auto-flow: column; gap: 0.5rem; align-items: center; }
+.panel-head > div { min-width: 0; }
+
+@media (max-width: 500px) {
+  .head-actions { grid-auto-flow: row; justify-items: start; }
+}

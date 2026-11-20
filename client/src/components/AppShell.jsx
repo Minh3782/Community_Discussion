@@ -12,6 +12,7 @@ import '../styles/shell.css';
 const NAV = {
   user: [
     { label: 'Home', to: '/home' },
+    { label: 'Communities', to: '/communities' },
     { label: 'Discussions', to: '/discussions' },
     { label: 'Create a post', to: '/posts/new' },
     { label: 'My posts' },
@@ -20,6 +21,7 @@ const NAV = {
   ],
   moderator: [
     { label: 'Home', to: '/moderator' },
+    { label: 'Communities', to: '/communities' },
     { label: 'Discussions', to: '/discussions' },
     { label: 'Review queue' },
     { label: 'Reports' },
@@ -65,7 +67,7 @@ export default function AppShell() {
           item.to ? (
             // Home links use `end` so they are not highlighted on deeper pages;
             // Discussions stays highlighted on /discussions/new
-            <NavLink key={item.label} to={item.to} end={item.label !== 'Discussions'}>
+            <NavLink key={item.label} to={item.to} end={!['Discussions', 'Communities'].includes(item.label)}>
               {item.label}
             </NavLink>
           ) : (

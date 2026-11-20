@@ -6,7 +6,7 @@ import {
   getCommunityDiscussions,
   createDiscussion,
 } from '../controllers/communityController.js';
-import { getMembership, joinCommunity, leaveCommunity } from '../controllers/membershipController.js';
+import { getMembership, getMyMemberships, joinCommunity, leaveCommunity } from '../controllers/membershipController.js';
 
 const router = Router();
 
@@ -14,6 +14,9 @@ const router = Router();
 router.use(requireAuth);
 
 router.get('/', getCommunities);
+
+// U1: which communities the current user belongs to (must stay above '/:communityId')
+router.get('/memberships/mine', getMyMemberships);
 
 // U3: discussions in a community
 router
