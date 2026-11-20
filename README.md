@@ -33,15 +33,16 @@ The Vite dev server forwards `/api/*` to the Express server, so the browser sees
 | `npm run server` / `npm run client` | Run just one of them |
 | `npm run build` | Production build of the frontend (`client/dist`) |
 | `npm run lint --prefix client` | Lint the frontend (oxlint) |
+| `npm run seed:discussions --prefix server` | Add a "Test Community" with 3 test discussions (safe to re-run) |
 
 ## Project status
 | Area | Status |
 |---|---|
 | Log In story (U1): register, log in/out, forgot/reset password, lockout | Done |
-| Role home screens (`/home`, `/moderator`, `/admin`) | Placeholders ("Coming soon" cards, menu links not wired) |
+| Role home screens (`/home`, `/moderator`, `/admin`) | Placeholders (action cards and most menu links not wired yet) |
 | **User database** | **Not done**: users live in memory and are lost on restart |
 | **Session storage** | **Not done**: express-session MemoryStore |
-| Posts API (`/api/posts`) | Sample only: **not protected**, must be secured before use |
+| Posts API (`/api/posts`): publish (U4) and timestamp ordering (U5) | Done (API only; the create-post form and post list screens are separate tasks) |
 | Automated tests | None yet |
 
 Search the code for `TODO(database)` to find every spot that changes when MongoDB is added. Step-by-step instructions are in the handover guide (Section 5).
@@ -95,7 +96,13 @@ Minimal, light mode, green theme. Colours, radius and spacing are tokens at the 
 | POST | /api/auth/forgot-password | `{ email }` → sends reset link (same reply whether or not the email exists) |
 | POST | /api/auth/reset-password | `{ token, password }` |
 | GET | /api/health | health check |
-| GET / POST | /api/posts | sample only, unprotected (see status) |
+| GET | /api/communities/:communityId/membership | `{ community, member }`: is the logged-in user a member? |
+| POST | /api/communities/:communityId/membership | Join (U1). 201 joined, 200 already a member; 404 unknown community |
+| DELETE | /api/communities/:communityId/membership | Leave (U1). 200 `{ member: false }`, also when not a member |
+| POST | /api/posts | Publish a post (U4, login required, **must be a member of the community**, else 403). `{ title, body, discussionId, communityId? }` → 201 post. 400 with `fields` (per-field messages) if title/body/discussion is missing or invalid, or the discussion is not in `communityId`; 404 if the discussion does not exist. Title max 200, body max 10000 characters. Author is always the logged-in user. |
+| GET | /api/posts | List posts by timestamp (U5, login required). `?discussionId=` or `?communityId=` (exactly one), `&sort=newest` (default) or `oldest`. Returns up to 100 posts; 404 if the discussion/community does not exist. |
+
+Post shape: `{ id, title, body, author: { id, name }, discussion, community, createdAt, updatedAt }`.
 
 ## Contributing
 Work on a feature branch and open a pull request into `main`:

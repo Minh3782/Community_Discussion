@@ -5,8 +5,7 @@ import '../styles/shell.css';
 
 /**
  * One home screen per role. Each entry lists the navigation and quick actions
- * that role will get. The features themselves are built in later stories,
- * so they are shown as "Coming soon".
+ * that role will get. The features themselves are built in later stories.
  */
 const ROLES = {
   user: {
@@ -15,10 +14,10 @@ const ROLES = {
     intro: 'Catch up on topics you follow and start new conversations.',
     nav: ['Home', 'Discussions', 'My posts', 'Saved', 'Notifications'],
     actions: [
-      { icon: '✍️', title: 'Start a discussion', text: 'Ask a question or share an idea with the community.' },
-      { icon: '🔎', title: 'Browse topics', text: 'Find conversations by category or keyword.' },
-      { icon: '🔖', title: 'Saved threads', text: 'Come back to the discussions you bookmarked.' },
-      { icon: '🔔', title: 'Notifications', text: 'See replies and mentions in one place.' },
+      { title: 'Start a discussion', text: 'Ask a question or share an idea with the community.' },
+      { title: 'Browse topics', text: 'Find conversations by category or keyword.' },
+      { title: 'Saved threads', text: 'Come back to the discussions you bookmarked.' },
+      { title: 'Notifications', text: 'See replies and mentions in one place.' },
     ],
   },
   moderator: {
@@ -27,10 +26,10 @@ const ROLES = {
     intro: 'Keep conversations respectful: review reports and flagged content.',
     nav: ['Home', 'Review queue', 'Reports', 'Flagged posts', 'Discussions'],
     actions: [
-      { icon: '🚩', title: 'Review reports', text: 'Handle posts and comments members have reported.' },
-      { icon: '📝', title: 'Pending posts', text: 'Approve or reject posts waiting for review.' },
-      { icon: '🔇', title: 'Mute a member', text: 'Temporarily restrict members who break the rules.' },
-      { icon: '📜', title: 'Community rules', text: 'Check the guidelines you enforce.' },
+      { title: 'Review reports', text: 'Handle posts and comments members have reported.' },
+      { title: 'Pending posts', text: 'Approve or reject posts waiting for review.' },
+      { title: 'Mute a member', text: 'Temporarily restrict members who break the rules.' },
+      { title: 'Community rules', text: 'Check the guidelines you enforce.' },
     ],
   },
   admin: {
@@ -39,10 +38,10 @@ const ROLES = {
     intro: 'Manage accounts, roles and platform settings.',
     nav: ['Home', 'Users', 'Roles', 'Communities', 'Categories', 'Settings'],
     actions: [
-      { icon: '👥', title: 'Manage users', text: 'Search, suspend or remove accounts.' },
-      { icon: '🛡️', title: 'Assign roles', text: 'Promote members to moderator or admin.' },
-      { icon: '🗂️', title: 'Categories', text: 'Create and organise discussion categories.' },
-      { icon: '⚙️', title: 'Platform settings', text: 'Configure security and email options.' },
+      { title: 'Manage users', text: 'Search, suspend or remove accounts.' },
+      { title: 'Assign roles', text: 'Promote members to moderator or admin.' },
+      { title: 'Categories', text: 'Create and organise discussion categories.' },
+      { title: 'Platform settings', text: 'Configure security and email options.' },
     ],
   },
 };
@@ -89,7 +88,7 @@ export default function RoleHome({ role, children }) {
         {children ?? <>
         <section className="panel panel-welcome">
           <p className="eyebrow">{cfg.label} home</p>
-          <h1>Hi {user.name.split(' ')[0]}, welcome back 👋</h1>
+          <h1>Hi {user.name.split(' ')[0]}, welcome back</h1>
           <p className="muted">{cfg.intro}</p>
         </section>
 
@@ -98,10 +97,8 @@ export default function RoleHome({ role, children }) {
           <div className="action-grid">
             {cfg.actions.map((a) => (
               <article key={a.title} className="action-card">
-                <span className="action-icon" aria-hidden="true">{a.icon}</span>
                 <h3>{a.title}</h3>
                 <p className="muted">{a.text}</p>
-                <span className="soon">Coming soon</span>
               </article>
             ))}
           </div>
@@ -110,7 +107,6 @@ export default function RoleHome({ role, children }) {
         <section className="panel panel-activity">
           <h2>Recent activity</h2>
           <div className="empty">
-            <span aria-hidden="true">🌱</span>
             <p>Nothing here yet. Activity will show up once discussions are live.</p>
           </div>
         </section>
