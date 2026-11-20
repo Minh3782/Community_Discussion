@@ -8,6 +8,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import AdminCommunitiesPage from './pages/AdminCommunitiesPage';
 import RoleHome from './pages/RoleHome';
 import DiscussionsPage from './pages/DiscussionsPage';
+import NewDiscussionPage from './pages/NewDiscussionPage';
 
 export default function App() {
   return (
@@ -62,6 +63,10 @@ export default function App() {
             path="/discussions"
             element={<DiscussionsPage />}
           />
+             <Route
+      path="/discussions/new"
+      element={<NewDiscussionPage />}
+    />
         </Route>
       </Route>
 
