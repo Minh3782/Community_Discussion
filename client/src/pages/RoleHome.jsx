@@ -71,18 +71,34 @@ export default function RoleHome({ role, children }) {
       </header>
 
       <nav className="shell-nav" aria-label="Main">
-        {cfg.nav.map((item, i) => (
-          role === 'admin' && (item === 'Home' || item === 'Communities') ? (
-            <NavLink key={item} end to={item === 'Home' ? '/admin' : '/admin/communities'}>
-              {item}
-            </NavLink>
-          ) : (
-          <a key={item} href="#" className={i === 0 ? 'active' : ''} aria-current={i === 0 ? 'page' : undefined}>
-            {item}
-          </a>
-          )
-        ))}
-      </nav>
+  {cfg.nav.map((item) => {
+    const homePaths = {
+      user: '/home',
+      moderator: '/moderator',
+      admin: '/admin',
+    };
+
+    let destination;
+
+    if (item === 'Home') {
+      destination = homePaths[role];
+    } else if (item === 'Discussions') {
+      destination = '/discussions';
+    } else if (role === 'admin' && item === 'Communities') {
+      destination = '/admin/communities';
+    }
+
+    return destination ? (
+      <NavLink key={item} to={destination} end>
+        {item}
+      </NavLink>
+    ) : (
+      <a key={item} href="#">
+        {item}
+      </a>
+    );
+  })}
+        </nav>
 
       <main className="shell-main">
         {children ?? <>
