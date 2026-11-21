@@ -42,3 +42,10 @@ export async function leaveCommunity(req, res) {
   await Membership.deleteOne({ user: req.user._id, community });
   res.json(membershipView(community, false));
 }
+
+// GET /api/communities/memberships/mine -> ids of every community the current user has joined
+// (lets the community list show Join / Leave on each card with one request)
+export async function getMyMemberships(req, res) {
+  const ids = await Membership.distinct('community', { user: req.user._id });
+  res.json({ communities: ids.map(String) });
+}
