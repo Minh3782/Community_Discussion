@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import api, { errorMessage } from '../api';
 import JoinLeaveButton from '../components/JoinLeaveButton';
+import CommunityPosts from '../components/CommunityPosts';
 import '../styles/discussions.css';
 import '../styles/communities.css';
 
@@ -11,6 +12,7 @@ const formatDate = (value) =>
 // Story U1: one community with its rules, discussions and a Join / Leave button
 export default function CommunityPage() {
   const { communityId } = useParams();
+  const location = useLocation();
   const [result, setResult] = useState(null);
   const [member, setMember] = useState(false);
   const [actionError, setActionError] = useState('');
@@ -78,6 +80,9 @@ export default function CommunityPage() {
         {actionError && <p className="alert alert-error" role="alert">{actionError}</p>}
         {community && (
           <>
+            {location.state?.publishedCommunityId === communityId && (
+              <p className="alert alert-success" role="status">Post published.</p>
+            )}
             {member && <p><span className="member-badge">You have joined this community</span></p>}
             <p className="muted community-desc-full">{community.description || 'No description yet.'}</p>
           </>
@@ -121,6 +126,7 @@ export default function CommunityPage() {
               </div>
             )}
           </section>
+          <CommunityPosts communityId={community._id} />
         </>
       )}
     </>
