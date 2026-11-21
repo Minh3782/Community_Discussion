@@ -16,14 +16,30 @@ function Byline({ name, date }) {
   );
 }
 
+function loadErrorMessage(error) {
+  const status = error?.response?.status;
+  if (status === 404) return 'This discussion could not be found. It may have been removed.';
+  if (status === 401) return 'Your session has expired. Please log out and sign in again.';
+  if (status === 403) return 'You do not have permission to view this discussion.';
+  if (error?.code === 'ECONNABORTED' || error?.code === 'ETIMEDOUT') {
+    return 'Loading this discussion took too long. Check your connection and try again.';
+  }
+  if (!error?.response && error?.request) {
+    return 'Unable to load this discussion. Check your internet connection and try again.';
+  }
+  if (status >= 500) return 'The discussion could not be loaded right now. Please try again.';
+  return errorMessage(error, 'Unable to load this discussion. Please try again.');
+}
+
 export default function DiscussionDetailPage() {
   const { discussionId } = useParams();
   const [searchParams] = useSearchParams();
   const [result, setResult] = useState(null);
+  const [retry, setRetry] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
-    const config = { signal: controller.signal };
+    const config = { signal: controller.signal, timeout: 15000 };
 
     async function loadDiscussion() {
       try {
@@ -31,19 +47,24 @@ export default function DiscussionDetailPage() {
           api.get(`/discussions/${encodeURIComponent(discussionId)}`, config),
           api.get('/posts', { ...config, params: { discussionId } }),
         ]);
-        if (!controller.signal.aborted) setResult({ discussionId, discussion, posts });
+        if (!discussion || typeof discussion.title !== 'string' || !Array.isArray(posts)) {
+          throw new Error('Invalid discussion response.');
+        }
+        if (!controller.signal.aborted) setResult({ discussionId, retry, discussion, posts });
       } catch (err) {
         if (!controller.signal.aborted) {
-          setResult({ discussionId, error: errorMessage(err, 'Unable to load this discussion.') });
+          setResult({ discussionId, retry, error: loadErrorMessage(err) });
+          controller.abort();
         }
       }
     }
 
     void loadDiscussion();
     return () => controller.abort();
-  }, [discussionId]);
+  }, [discussionId, retry]);
 
-  const current = result?.discussionId === discussionId ? result : null;
+  // A retry or a different discussion must not display an earlier response.
+  const current = result?.discussionId === discussionId && result.retry === retry ? result : null;
   const discussion = current?.discussion;
   const communityId = discussion?.community || searchParams.get('community');
   const backTo = communityId
@@ -52,13 +73,20 @@ export default function DiscussionDetailPage() {
 
   return (
     <>
-      <section className="panel panel-welcome">
+      <section className="panel panel-welcome" aria-busy={!current}>
         <div className="panel-head">
           <h1>{discussion?.title || 'Discussion'}</h1>
           <Link className="btn btn-ghost btn-sm" to={backTo}>Back to Discussions</Link>
         </div>
-        {!current && <p role="status">Loading discussion...</p>}
-        {current?.error && <p className="alert alert-error" role="alert">{current.error}</p>}
+        {!current && <p role="status">Loading discussion…</p>}
+        {current?.error && (
+          <div className="stack">
+            <p className="alert alert-error" role="alert">{current.error}</p>
+            <button type="button" className="btn btn-primary btn-sm" onClick={() => setRetry((value) => value + 1)}>
+              Retry
+            </button>
+          </div>
+        )}
         {discussion && (
           <>
             <Byline name={discussion.creator?.name} date={discussion.createdAt} />
