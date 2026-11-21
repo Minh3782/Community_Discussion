@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import api, { errorMessage } from '../api';
 import Field from '../components/Field';
-import RoleHome from './RoleHome';
 import '../styles/admin-communities.css';
 
 const emptyForm = { name: '', description: '', rules: '' };
@@ -86,7 +85,7 @@ export default function AdminCommunitiesPage() {
   }
 
   return (
-    <RoleHome role="admin">
+    <>
       <div className="admin-communities">
         <h1>Manage Communities</h1>
         <div aria-live="polite">
@@ -173,6 +172,6 @@ export default function AdminCommunitiesPage() {
           </section>
         </div>
       </div>
-    </RoleHome>
+    </>
   );
 }

@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 // Users now live in MongoDB, so the server cannot run without it.
 export default async function connectDB() {
   if (!process.env.MONGO_URI) {
-    console.error('MONGO_URI is missing. Copy server/.env.example to server/.env.');
+    console.error('MONGO_URI is missing in server/.env');
     process.exit(1);
   }
   try {

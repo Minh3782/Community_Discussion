@@ -28,9 +28,9 @@ export async function seedDemoUsers() {
   const password = 'Password123!';
   const passwordHash = await bcrypt.hash(password, 10);
   const demo = [
-    { name: 'Uyen User', email: 'user@demo.com', role: 'user' },
-    { name: 'Minh Moderator', email: 'moderator@demo.com', role: 'moderator' },
-    { name: 'An Admin', email: 'admin@demo.com', role: 'admin' },
+    { name: 'Emma User', email: 'user@demo.com', role: 'user' },
+    { name: 'Mark Moderator', email: 'moderator@demo.com', role: 'moderator' },
+    { name: 'Alice Admin', email: 'admin@demo.com', role: 'admin' },
   ];
   for (const u of demo) {
     if (!(await findByEmail(u.email))) await createUser({ ...u, passwordHash });

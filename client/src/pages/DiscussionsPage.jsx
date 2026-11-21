@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import api, { errorMessage } from '../api';
+import '../styles/discussions.css';
+
+const formatDate = (value) =>
+  value ? new Date(value).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
 
 export default function DiscussionsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -150,7 +154,7 @@ export default function DiscussionsPage() {
         ) : communities.length === 0 ? (
           <p className="muted">No communities are available yet.</p>
         ) : (
-          <div className="field">
+          <div className="field community-picker">
             <label htmlFor="discussion-community">Community</label>
             <select
               id="discussion-community"
@@ -169,21 +173,21 @@ export default function DiscussionsPage() {
       </section>
 
       <section className="panel panel-actions">
-        <h2>
-          {selectedCommunity
-            ? `${selectedCommunity.name} discussions`
-            : 'Discussion list'}
-        </h2>
-        {selectedCommunity && (
-  <div>
-    <Link
-      className="btn btn-primary"
-      to={`/discussions/new?community=${encodeURIComponent(communityId)}`}
-    >
-      Start Discussion
-    </Link>
-  </div>
-)}
+        <div className="panel-head">
+          <h2>
+            {selectedCommunity
+              ? `${selectedCommunity.name} discussions`
+              : 'Discussion list'}
+          </h2>
+          <Link
+            className="btn btn-primary btn-sm"
+            to={selectedCommunity
+              ? `/discussions/new?community=${encodeURIComponent(communityId)}`
+              : '/discussions/new'}
+          >
+            Start Discussion
+          </Link>
+        </div>
 
         {!communityId ? (
           <div className="empty">
@@ -214,13 +218,18 @@ export default function DiscussionsPage() {
             <p>No discussions have been started in this community yet.</p>
           </div>
         ) : (
-          <div className="action-grid">
+          <div className="discussion-grid">
             {currentResult.discussions.map((discussion) => (
-              <article key={discussion._id} className="action-card">
-                <h3>{discussion.title}</h3>
-                <p className="muted">{discussion.content}</p>
-                <p className="muted">
-                  Posted by {discussion.creator?.name || 'Unknown member'}
+              <article key={discussion._id} className="discussion-card">
+                <h3>
+                  <Link to={`/discussions/${encodeURIComponent(discussion._id)}?${new URLSearchParams({ community: communityId })}`}>
+                    {discussion.title}
+                  </Link>
+                </h3>
+                <p className="muted discussion-excerpt">{discussion.content}</p>
+                <p className="discussion-meta">
+                  {discussion.creator?.name || 'Unknown member'}
+                  {discussion.createdAt && <> &middot; {formatDate(discussion.createdAt)}</>}
                 </p>
               </article>
             ))}

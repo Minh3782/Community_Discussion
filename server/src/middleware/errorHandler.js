@@ -12,5 +12,6 @@ export const errorHandler = (err, req, res, next) => {
   res.status(status).json({
     message: status >= 500 ? 'Something went wrong.' : err.message,
     ...(err.retryAfter && { retryAfter: err.retryAfter }),
+    ...(status < 500 && err.fields && { fields: err.fields }),
   });
 };
