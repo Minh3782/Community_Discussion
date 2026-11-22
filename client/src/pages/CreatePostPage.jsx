@@ -15,7 +15,6 @@ export default function CreatePostPage() {
   const [loadError, setLoadError] = useState('');
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState('');
-  const [published, setPublished] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -56,7 +55,6 @@ export default function CreatePostPage() {
   async function publish(event) {
     event.preventDefault();
     if (loading || loadError || publishing) return;
-    setPublished(false);
     setPublishError('');
 
     if (!title.trim() || !content.trim() || !selected) {
@@ -75,9 +73,10 @@ export default function CreatePostPage() {
         setPublishError('The server did not confirm publication.');
         return;
       }
-      setTitle('');
-      setContent('');
-      setPublished(true);
+      // U4: opening the community reloads its Posts panel after publication.
+      navigate(`/communities/${encodeURIComponent(selected.community.id)}`, {
+        state: { publishedCommunityId: selected.community.id },
+      });
     } catch (error) {
       setPublishError(errorMessage(error, 'Could not publish the post.'));
     } finally {
@@ -96,7 +95,6 @@ export default function CreatePostPage() {
             <Link to="/discussions">Browse discussions</Link>
           </div>
         )}
-        {published && <p className="alert alert-success" role="status">Post published.</p>}
         {publishError && <p className="alert alert-error" role="alert">{publishError}</p>}
 
         <form className="form" onSubmit={publish}>

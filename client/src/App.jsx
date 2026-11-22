@@ -17,7 +17,7 @@ import NewDiscussionPage from './pages/NewDiscussionPage';
 export default function App() {
   return (
     <Routes>
-      {/* Public pages (logged-in users are redirected to their home) */}
+      {/* Public pages */}
       <Route element={<GuestRoute />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -25,7 +25,7 @@ export default function App() {
       </Route>
       <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-      {/* Every logged-in page: AppShell draws the header and menu, the page renders in its <Outlet /> */}
+      {/* AppShell supplies one shared header and menu for signed-in pages. */}
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>
           <Route element={<ProtectedRoute roles={['user']} />}>
@@ -40,7 +40,7 @@ export default function App() {
             <Route path="/admin/communities" element={<AdminCommunitiesPage />} />
           </Route>
 
-          {/* Any logged-in role */}
+          {/* Available to every signed-in role. */}
           <Route path="/communities" element={<CommunitiesPage />} />
           <Route path="/communities/:communityId" element={<CommunityPage />} />
           <Route path="/discussions" element={<DiscussionsPage />} />
@@ -49,7 +49,6 @@ export default function App() {
         </Route>
       </Route>
 
-      {/* App opens on the login page; ProtectedRoute bounces logged-in users home */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
