@@ -75,7 +75,6 @@ export default function CommunitiesPage() {
           </div>
         ) : communities.length === 0 ? (
           <div className="empty">
-            <span aria-hidden="true">🌱</span>
             <p>No communities have been created yet.</p>
           </div>
         ) : (

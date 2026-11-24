@@ -34,6 +34,7 @@ The Vite dev server forwards `/api/*` to the Express server, so the browser sees
 | `npm run dev` | Run API and frontend together |
 | `npm run server` / `npm run client` | Run just one of them |
 | `npm run build` | Production build of the frontend (`client/dist`) |
+| `npm test --prefix server` | Run the API acceptance tests (vitest, see [Tests](#tests)) |
 | `npm run lint --prefix client` | Lint the frontend (oxlint) |
 | `npm run seed:discussions --prefix server` | Add a "Test Community" with 3 test discussions (safe to re-run) |
 
@@ -44,10 +45,10 @@ Iteration 1 stories:
 |---|---|
 | C1 Log in and registration: register, log in/out, forgot/reset password, 5-minute lockout | Done |
 | A1 Manage communities and moderators (`/admin/communities`) | Done |
-| U1 Browse and join communities | API done (list, view, join, leave). Community page with rules and Join/Leave buttons not built yet |
+| U1 Browse and join communities | Done (`/communities`, `/communities/:communityId`: rules, discussions, posts, Join/Leave) |
 | U3 Start a discussion (`/discussions`, `/discussions/new`) | Done |
-| U4 Create a post | API done. Create-post form and post list screens not built yet |
-| U5 View a discussion | Post ordering API done. Discussion page not built yet |
+| U4 Create a post | Done (`/posts/new`, member role only; published posts appear on the community page) |
+| U5 View a discussion | Done (`/discussions/:discussionId`: posts newest first, error messages with Retry) |
 
 Platform:
 
@@ -56,7 +57,16 @@ Platform:
 | User database | Done (MongoDB) |
 | Shared app layout and menu (`AppShell`) | Done. Menu items for pages not built yet are greyed out |
 | Session storage | **Not done**: express-session MemoryStore, so everyone is logged out when the server restarts. See `TODO(database)` in `server/src/app.js` and handover guide step 5.5 |
-| Automated tests | None in the repo yet |
+| Automated tests | API acceptance tests for C1, A1, U1, U3, U4 and U5 (40 tests). No frontend tests in the repo yet |
+
+## Tests
+```bash
+npm test --prefix server
+```
+
+The tests use a temporary in-memory MongoDB, so they never touch the database in `server/.env`. The first run downloads a MongoDB binary and takes longer. To use your own database instead, set `TEST_MONGO_URI`; its database name must contain `test`, because **the tests delete that database when they finish**.
+
+`vite` is listed in the server's devDependencies because vitest needs it. Keep it there: without it, `npm install` can drop vitest's native packages from `package-lock.json`, and the tests fail with "Cannot find native binding".
 
 ## Log in (story C1)
 Demo accounts, created when the server starts if they do not exist yet:
@@ -81,19 +91,24 @@ server/
     config/db.js        MongoDB connection (server stops if it fails)
     data/userStore.js   user lookups used by auth + demo account seeding
     models/             User, Community, Membership, Discussion, Post
-    controllers/        auth, adminCommunity, community, membership, post
-    routes/             Express routers (auth, admin, communities, posts)
+    controllers/        auth, adminCommunity, community, discussion, membership, post
+    routes/             Express routers (auth, admin, communities, discussions, posts)
     middleware/         error handling, requireAuth (loads req.user) / requireRole
     utils/              httpError (status + message), mailer (SMTP or console)
+  tests/                API acceptance tests per story + shared helpers
+  vitest.config.js      test settings
 client/src/
   App.jsx             routes (opens on /login)
   api.js              axios instance + errorMessage()
   roles.js            role display names
   context/            AuthContext (current user, login, logout, ROLE_HOME)
-  components/         AppShell (header + menu), AuthLayout, Field, Logo, ProtectedRoute
+  components/         AppShell (header + menu), AuthLayout, CommunityPosts, Field,
+                      JoinLeaveButton, Logo, ProtectedRoute
   pages/              Login, Register, ForgotPassword, ResetPassword, RoleHome,
-                      AdminCommunities, Discussions, NewDiscussion
-  styles/             auth, shell, admin-communities, discussions (CSS Grid, responsive)
+                      AdminCommunities, Communities, Community, CreatePost,
+                      Discussions, DiscussionDetail, NewDiscussion
+  styles/             auth, shell, admin-communities, communities, create-post,
+                      discussions (CSS Grid, responsive)
 docs/
   Developer_Handover_Guide.docx
 ```
@@ -126,7 +141,7 @@ All routes except auth and health require a logged-in session (401 otherwise). I
 | PUT | /api/admin/communities/:communityId/moderators/:userId | assign a moderator (400 if the user is not a moderator) |
 | DELETE | /api/admin/communities/:communityId | 204; 409 if it has memberships or discussions |
 
-**Communities and discussions (U1, U3)**
+**Communities and discussions (U1, U3, U5)**
 
 | Method | Path | Description |
 |---|---|---|
@@ -134,9 +149,12 @@ All routes except auth and health require a logged-in session (401 otherwise). I
 | GET | /api/communities/:communityId | one community |
 | GET | /api/communities/:communityId/discussions | its discussions, newest first, with creator name |
 | POST | /api/communities/:communityId/discussions | `{ title, content }` → 201; 400 if either is missing |
+| GET | /api/communities/memberships/mine | `{ communities: [ids] }` the logged-in user has joined |
 | GET | /api/communities/:communityId/membership | `{ community, member }`: is the logged-in user a member? |
 | POST | /api/communities/:communityId/membership | Join. 201 joined, 200 already a member |
 | DELETE | /api/communities/:communityId/membership | Leave. 200 `{ member: false }`, also when not a member |
+| GET | /api/discussions | discussions in the communities the user has joined, for the create-post form (user role only, else 403) |
+| GET | /api/discussions/:discussionId | one discussion with its creator name |
 
 **Posts (U4, U5)**
 
@@ -157,4 +175,4 @@ git checkout -b feature/<short-name>
 git push -u origin feature/<short-name>
 ```
 
-Before opening the pull request, run the linter and re-check the login acceptance tests (handover guide, Section 9). Add any new setting to `server/.env.example` with a dummy value.
+Before opening the pull request, run the linter and `npm test --prefix server`, and re-check the login acceptance tests (handover guide, Section 9). Add any new setting to `server/.env.example` with a dummy value.

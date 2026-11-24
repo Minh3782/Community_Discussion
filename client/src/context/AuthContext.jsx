@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
 import api from '../api';
 
 const AuthContext = createContext(null);
@@ -28,7 +29,8 @@ export function AuthProvider({ children }) {
     try {
       await api.post('/auth/logout');
     } finally {
-      setUser(null);
+      // Let ProtectedRoute redirect now, so the caller's navigate() (with the "logged out" notice) runs last
+      flushSync(() => setUser(null));
     }
   }, []);
 
